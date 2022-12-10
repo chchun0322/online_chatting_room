@@ -75,7 +75,7 @@
      </rect>
     </property>
     <property name="title">
-     <string>Room</string>
+     <string>Channel</string>
     </property>
     <widget class="QListWidget" name="listWidget">
      <property name="geometry">
@@ -169,7 +169,7 @@
    <sender>listWidget_2</sender>
    <signal>itemDoubleClicked(QListWidgetItem*)</signal>
    <receiver>MainWindow</receiver>
-   <slot>enterRoom(QListWidgetItem*)</slot>
+   <slot>enterChannel(QListWidgetItem*)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>92</x>
@@ -200,7 +200,7 @@
  </connections>
  <slots>
   <slot>sendMessage()</slot>
-  <slot>enterRoom(QListWidgetItem*)</slot>
+  <slot>enterChannel(QListWidgetItem*)</slot>
   <slot>clickUserList(QListWidgetItem*)</slot>
   <slot>closed()</slot>
  </slots>

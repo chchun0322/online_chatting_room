@@ -12,6 +12,12 @@ class Server():
     def __init__(self, UI):
         self.FrameUI = UI
 
+        """
+        configuration
+        
+        default port: 5000
+        initial channel: Study, Game
+        """
         self.localIP = '127.0.0.1'
         self.serverPort = 5000
         self.channels = []
@@ -30,7 +36,6 @@ class Server():
         self.updateChannelListUI()
 
     def run(self):
-        # self.buildServer()
         print('Server OnListen')
         while self.listSocket:
             rlist, wlist, elist = select.select(self.listSocket, [], [])
@@ -65,19 +70,18 @@ class Server():
                         if message['To'] == 'all':
                             for channel in self.channels:
                                 if addr in channel['users']:
-                                    print('Room {0} recice message:{1} From:{2}'.format(channel['name'], data, addr))
+                                    print('Channel {0} receive message:{1} From:{2}'.format(channel['name'], data, addr))
                                     for user in channel['users']:
-                                        JsonData = json.dumps(message).encode('utf-8')
-                                        self.udpServer[self.channels.index(channel)].sendto(JsonData, user)
+                                        jsonData = json.dumps(message).encode('utf-8')
+                                        self.udpServer[self.channels.index(channel)].sendto(jsonData, user)
                         else:
                             for channel in self.channels:
                                 if addr in channel['users']:
                                     user = (message['To'][0], message['To'][1])
-                                    JsonData = json.dumps(message).encode('utf-8')
-                                    self.udpServer[self.channels.index(channel)].sendto(JsonData, user)
+                                    jsonData = json.dumps(message).encode('utf-8')
+                                    self.udpServer[self.channels.index(channel)].sendto(jsonData, user)
                     except:
                         print('UDP error')
-                        # self.listSocket.remove(sock)
 
                 else:
                     try:
@@ -89,8 +93,8 @@ class Server():
                             message = {}
                             message['Head'] = 'CHANNELSLIST'
                             message['Data'] = self.channels
-                            JsonData = json.dumps(message).encode('utf-8')
-                            sock.sendall(JsonData)
+                            jsonData = json.dumps(message).encode('utf-8')
+                            sock.sendall(jsonData)
                         elif command.find('ENTER') != -1:
                             para = command.split(' ')
                             name = para[1]
@@ -110,10 +114,10 @@ class Server():
                                 if channel['name'] == name:
                                     message['Data'] = channel['users']
                                     break
-                            JsonData = json.dumps(message).encode('utf-8')
-                            # sock.sendall(JsonData)
+                            jsonData = json.dumps(message).encode('utf-8')
+                            # sock.sendall(jsonData)
                             for user in self.userList:
-                                user[1].sendall(JsonData)
+                                user[1].sendall(jsonData)
                             # 转发进入消息 UDP
                             for channel in self.channels:
                                 if name == channel['name']:
@@ -122,10 +126,10 @@ class Server():
                                         message = {}
                                         message['From'] = ('System Message', '0')
                                         message['To'] = 'all'
-                                        message['Data'] = '{}:{} Enter Room {}.'.format(ip, port, name)
-                                        JsonData = json.dumps(message).encode('utf-8')
-                                        self.udpServer[self.channels.index(channel)].sendto(JsonData, user)
-                        elif command.find('QUIT') != -1:  # 退出聊天室命令
+                                        message['Data'] = '{}:{} Enter Channel {}.'.format(ip, port, name)
+                                        jsonData = json.dumps(message).encode('utf-8')
+                                        self.udpServer[self.channels.index(channel)].sendto(jsonData, user)
+                        elif command.find('QUIT') != -1:
                             para = command.split(' ')
                             name = para[1]
                             ip = para[2]
@@ -137,9 +141,9 @@ class Server():
                                         message = {}
                                         message['From'] = ('System Message', '0')
                                         message['To'] = 'all'
-                                        message['Data'] = '{}:{} Exit Room.'.format(ip, port)
-                                        JsonData = json.dumps(message).encode('utf-8')
-                                        self.udpServer[self.channels.index(channel)].sendto(JsonData, user)
+                                        message['Data'] = '{}:{} Exit Channel.'.format(ip, port)
+                                        jsonData = json.dumps(message).encode('utf-8')
+                                        self.udpServer[self.channels.index(channel)].sendto(jsonData, user)
                                     break
                             message = {}
                             message['Head'] = 'USERLIST'
@@ -148,10 +152,10 @@ class Server():
                                 if channel['name'] == name:
                                     message['Data'] = channel['users']
                                     break
-                            JsonData = json.dumps(message).encode('utf-8')
-                            # sock.sendall(JsonData)
+                            jsonData = json.dumps(message).encode('utf-8')
+                            # sock.sendall(jsonData)
                             for user in self.userList:
-                                user[1].sendall(JsonData)
+                                user[1].sendall(jsonData)
                         elif command.find('EXIT') != -1:
                             para = command.split(' ')
                             name = para[1]
@@ -167,9 +171,9 @@ class Server():
                                         message = {}
                                         message['From'] = ('System Message', '0')
                                         message['To'] = 'all'
-                                        message['Data'] = '{}:{} Exit Room.'.format(ip, port)
-                                        JsonData = json.dumps(message).encode('utf-8')
-                                        self.udpServer[self.channels.index(channel)].sendto(JsonData, user)
+                                        message['Data'] = '{}:{} Exit Channel.'.format(ip, port)
+                                        jsonData = json.dumps(message).encode('utf-8')
+                                        self.udpServer[self.channels.index(channel)].sendto(jsonData, user)
                                     break
                             message = {}
                             message['Head'] = 'USERLIST'
@@ -178,10 +182,10 @@ class Server():
                                 if channel['name'] == name:
                                     message['Data'] = channel['users']
                                     break
-                            JsonData = json.dumps(message).encode('utf-8')
-                            # sock.sendall(JsonData)
+                            jsonData = json.dumps(message).encode('utf-8')
+                            # sock.sendall(jsonData)
                             for user in self.userList:
-                                user[1].sendall(JsonData)
+                                user[1].sendall(jsonData)
                             # 列表更新
                             for user in self.userList:
                                 if addr == user[0]:
@@ -243,10 +247,10 @@ class Server():
         message = {}
         message['Head'] = 'CHANNELSLIST'
         message['Data'] = self.channels
-        JsonData = json.dumps(message).encode('utf-8')
+        jsonData = json.dumps(message).encode('utf-8')
         for user in self.userList:
-            # JsonData = json.dumps(self.channels).encode('utf-8')
-            user[1].sendall(JsonData)
+            # jsonData = json.dumps(self.channels).encode('utf-8')
+            user[1].sendall(jsonData)
         return channel
 
     def updateUsersINChannel(self, name):
@@ -271,9 +275,9 @@ class Server():
                             message = {}
                             message['From'] = ('System Message', '0')
                             message['To'] = 'all'
-                            message['Data'] = '{}:{} Exit Room.'.format(user[0], user[1])
-                            JsonData = json.dumps(message).encode('utf-8')
-                            self.udpServer[self.channels.index(channel)].sendto(JsonData, alive_user)
+                            message['Data'] = '{}:{} Exit Channel.'.format(user[0], user[1])
+                            jsonData = json.dumps(message).encode('utf-8')
+                            self.udpServer[self.channels.index(channel)].sendto(jsonData, alive_user)
                             channel['users'].remove(user)
                         break
         message = {}
@@ -283,9 +287,9 @@ class Server():
             if channel['name'] == name:
                 message['Data'] = channel['users']
                 break
-        JsonData = json.dumps(message).encode('utf-8')
+        jsonData = json.dumps(message).encode('utf-8')
         for user in self.userList:
-            user[1].sendall(JsonData)
+            user[1].sendall(jsonData)
         self.updateUsersINChannel(name)
 
     def userEixt(self, addr):
@@ -296,12 +300,12 @@ class Server():
                 message = {}
                 message['Head'] = 'EXIT SERVER'
                 message['Data'] = self.channels
-                JsonData = json.dumps(message).encode('utf-8')
-                user[1].sendall(JsonData)
+                jsonData = json.dumps(message).encode('utf-8')
+                user[1].sendall(jsonData)
                 self.updateUserListUI()
                 break
 
-    def roomEixt(self, name):
+    def channelEixt(self, name):
         for channel in self.channels:
             if channel['name'] == name:
                 sock = self.udpServer[self.channels.index(channel)]
@@ -310,16 +314,16 @@ class Server():
                     message['From'] = ('System Message', '0')
                     message['To'] = 'all'
                     message['Data'] = 'channel is closed!.'
-                    JsonData = json.dumps(message).encode('utf-8')
-                    sock.sendto(JsonData, user)
+                    jsonData = json.dumps(message).encode('utf-8')
+                    sock.sendto(jsonData, user)
 
                 self.channels.remove(channel)
                 message = {}
                 message['Head'] = 'CHANNELSLIST'
                 message['Data'] = self.channels
-                JsonData = json.dumps(message).encode('utf-8')
+                jsonData = json.dumps(message).encode('utf-8')
                 for user in self.userList:
-                    user[1].sendall(JsonData)
+                    user[1].sendall(jsonData)
                 self.listSocket.remove(sock)
                 self.udpServer.remove(sock)
                 self.updateChannelListUI()
@@ -395,7 +399,7 @@ class ServerWindowDlg(QMainWindow):
                                      QMessageBox.Yes, QMessageBox.No)
         if reply == QMessageBox.Yes:
             name = channel.split(' ')[0].strip()
-            self.server.roomEixt(name)
+            self.server.channelEixt(name)
         else:
             pass
 

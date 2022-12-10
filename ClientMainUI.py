@@ -52,10 +52,10 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.pushButton.clicked.connect(MainWindow.sendMessage)
-        self.pushButton_2.clicked.connect(MainWindow.leaveRoom)
-        self.listWidget_2.itemDoubleClicked['QListWidgetItem*'].connect(MainWindow.enterRoom)
+        self.pushButton_2.clicked.connect(MainWindow.leaveChannel)
+        self.listWidget_2.itemDoubleClicked['QListWidgetItem*'].connect(MainWindow.enterChannel)
         self.listWidget_3.itemDoubleClicked['QListWidgetItem*'].connect(MainWindow.clickUserList)
-        # self.listWidget_4.itemDoubleClicked['QListWidgetItem*'].connect(MainWindow.leaveRoom)
+        # self.listWidget_4.itemDoubleClicked['QListWidgetItem*'].connect(MainWindow.leaveChannel)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -64,7 +64,7 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "Connect Status："))
         self.label_2.setText(_translate("MainWindow", "Failure"))
         self.groupBox.setTitle(_translate("MainWindow", "Channels"))
-        self.groupBox_2.setTitle(_translate("MainWindow", "Room"))
+        self.groupBox_2.setTitle(_translate("MainWindow", "Channel"))
         self.pushButton.setText(_translate("MainWindow", "Send"))
         self.pushButton_2.setText(_translate("MainWindow", "Leave"))
         self.label_3.setText(_translate("MainWindow", "UserList:"))
